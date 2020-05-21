@@ -1,2 +1,3 @@
 # bash
-this is bash .sh
+
+This is shell Scripts and functions
