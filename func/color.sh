@@ -50,7 +50,7 @@ white="echo -e \033[37m"
 end="\033[0m"
 }
 
-_colortest(){
+_color_test(){
 #间接变量引用 eval tempvar=\$$variable1 或者 tempvar=${!variable1}
 for i in black red green yellow blue purple skyblue white;do
 #    echo -e "${!i}test${end}"

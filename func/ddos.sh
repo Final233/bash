@@ -4,19 +4,19 @@
 #Author:                Final
 #QQ:                    438803792
 #Date:                  2020-05-23
-#FileName：             blacklist.sh
+#FileName：             ddos.sh
 #URL:                   http://cnblogs.com/fina
 #Description：          The test script
 #Copyright (C):         2020 All rights reserved
 #********************************************************************
-#如果此 IP 登录密码输错 10 次则在 iptables 拒绝
-_blacklist(){
+#连接数超过 10 放入到添加到 iptables 拒绝
+_ddos(){
 WARNING=10
-lastb |sed -rn 's/.* (([0-9]{1,3}\.){3}[0-9]{1,3}).*/\1/p'|sort|uniq -c|while read LINE;do
+ss -nt|sed -rn '/ESTAB/s/.* (.*):.*/\1/p'|sort|uniq -c|while read LINE;do
     TIME=`echo $LINE |cut -d" " -f1`
     IP=`echo $LINE |cut -d" " -f2`
     if [ $TIME -ge $WARNING ];then
-        echo iptables -A INPUT -s $IP -j DROP 
+        echo iptables -A INPUT -s $IP -j DROP
     fi
 done
 }
