@@ -3,15 +3,12 @@
 #********************************************************************
 #Author:                Final
 #QQ:                    438803792
-#Date:                  2020-05-21
-#FileName：             up.sh
+#Date:                  2020-05-23
+#FileName：             /etc/profile.d/danger.sh
 #URL:                   http://cnblogs.com/fina
 #Description：          The test script
 #Copyright (C):         2020 All rights reserved
 #********************************************************************
-DATE=`date +%F-%T`
-rm -f bak-*.tar.gz
-git add ./*
-git commit -m "$DATE"
-git push && echo 上传成功
-tar zcf bak-${DATA}.tar.gz * && echo 备份完成
+#将此文件放入到/etc/profile.d/目录下，环境可根据实际情况来写
+echo -e "\033[1;5;31m您现在在虚拟机环境操作!\033[0m"
+
