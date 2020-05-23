@@ -10,7 +10,7 @@
 #Description：          The test script
 #Copyright (C):         2020 All rights reserved
 #********************************************************************
-
+#设置颜色变量
 _color(){
 #echo -e "\033[字背景颜色；文字颜色m字符串\033[0m"
 
