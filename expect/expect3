@@ -1,0 +1,12 @@
+#!/usr/bin/env expect
+#使用变量
+set ip 127.0.0.1
+set user root
+set password password123
+set timeout 10
+spawn ssh $user@$ip
+expect {
+    "yes/no" { send "yes\n";exp_continue }
+    "password" { send "$password\n" }
+}
+interact

@@ -3,21 +3,12 @@
 #********************************************************************
 #Author:                Final
 #QQ:                    438803792
-#Date:                  2020-05-19
-#FileName：             status.sh
+#Date:                  2020-05-23
+#FileName：             /etc/profile.d/danger.sh
 #URL:                   http://cnblogs.com/fina
 #Description：          The test script
 #Copyright (C):         2020 All rights reserved
 #********************************************************************
-#显示状态
-_status(){
-#echo -e "\033[31m FALIED \033[0m"
-#echo -e "\033[32m OK \033[0m"
-
-. /etc/init.d/functions
-action "FAILED" false
-action "OK" true
-}
-
-_status
+#将此文件放入到/etc/profile.d/目录下，环境可根据实际情况来写
+echo -e "\033[1;5;31m您现在在虚拟机环境操作!\033[0m"
 

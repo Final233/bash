@@ -1,0 +1,9 @@
+#!/usr/bin/env expect
+#远程登录
+spawn ssh 127.0.0.1
+expect {
+    "yes/no" { send "yes\n";exp_continue }
+    "password" { send "password123\n" }
+}
+interact
+#expect oef

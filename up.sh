@@ -14,4 +14,5 @@ rm -f bak-*.tar.gz
 git add ./*
 git commit -m "$DATE"
 git push && echo 上传成功
+DATE=`date +%Y%m%d`
 tar zcf bak-${DATE}.tar.gz * && echo 备份完成

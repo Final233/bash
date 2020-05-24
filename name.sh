@@ -3,21 +3,22 @@
 #********************************************************************
 #Author:                Final
 #QQ:                    438803792
-#Date:                  2020-05-19
-#FileName：             status.sh
+#Date:                  2020-05-23
+#FileName：             name.sh
 #URL:                   http://cnblogs.com/fina
 #Description：          The test script
 #Copyright (C):         2020 All rights reserved
 #********************************************************************
-#显示状态
-_status(){
-#echo -e "\033[31m FALIED \033[0m"
-#echo -e "\033[32m OK \033[0m"
 
-. /etc/init.d/functions
-action "FAILED" false
-action "OK" true
+_name(){
+NAME=`basename $0`
+if [ "$NAME" = "test.sh" ];then
+    echo file name is test.sh
+elif [ "$NAME" = "test1.sh" ];then
+    echo file name is test1.sh
+else 
+    echo other
+fi
 }
 
-_status
-
+_name

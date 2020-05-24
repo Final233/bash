@@ -1,0 +1,8 @@
+#!/usr/bin/env expect
+#远程复制文件
+spawn scp /etc/fstab 127.0.0.1:/tmp
+expect {
+"yes/no" { send "yes\n";exp_continue }
+"password" { send "password123\n" }
+}
+interact

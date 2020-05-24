@@ -1,0 +1,12 @@
+#!/usr/bin/env expect
+# ./expect4 $1 $2 $3
+#远程登录主机 ip user password
+set ip [lindex $argv 0]
+set user [lindex $argv 1]
+set password [lindex $argv 2]
+spawn ssh $user@$ip
+expect {
+    "yes/no" { send "yes\n";exp_continue }
+    "password" { send "$password\n" }
+}
+interact
