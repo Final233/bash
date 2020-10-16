@@ -6,7 +6,7 @@
 #Date:                  2020-02-25
 #FileName：             tunning.sh
 #URL:                   http://cnblogs.com/fina
-#Description：          The test script
+#Description：          The tunning script
 #Copyright (C):         2020 All rights reserved
 #********************************************************************
 #适用于Linux调优
@@ -518,6 +518,18 @@ _help(){
     echo ""
 }
 
+_ssh(){
+    cp /etc/ssh/sshd_config{,.bak"${DATE}"}
+    sed -i '/GSSAPIAuthentication/s/yes/no/'  /etc/ssh/sshd_config 
+    sed -i '/#UseDNS/cUseDNS no'  /etc/ssh/sshd_config
+    if sshd -t;then
+        systemctl restart sshd
+        action "sshd setting success"
+    else
+        action "sshd conf file error."
+    fi
+}
+
 _execute(){
 case "$1" in
     set1)
@@ -541,6 +553,7 @@ case "$1" in
         _motd
         _disktunning
         _grublevel grub2
+        _ssh
         ;;
     nic)
         _nic "$@"
