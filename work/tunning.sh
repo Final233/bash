@@ -498,6 +498,24 @@ _securitycheck(){
         echo "DefaultLimitNOFILE=65535" >> "${FILE}"
         echo "DefaultLimitNPROC=65535" >> "${FILE}"
     fi
+
+    #设置最小密码长度
+    #cp -p /etc/login.defs /etc/login.defs.bak
+    #sed  -i '/^PASS_MIN_LEN/s/5/12/g' /etc/login.defs
+
+    #设置密码复杂度
+    #cp -p /etc/pam.d/system-auth-ac /etc/pam.d/system-auth-ac.bak
+    #sed -i 's/.* pam_pwquality.so.*/password    requisite     pam_cracklib.so try_first_pass retry=10 minlen=12 minclass=3 lcredit=-1 ucredit=-1 dcredit=-1 ocredit=-1 type='/g /etc/pam.d/system-auth-ac
+
+    #cp -p /etc/pam.d/password-auth-ac /etc/pam.d/password-auth-ac.bak
+    #sed -i 's/.* pam_pwquality.so.*/password    requisite     pam_cracklib.so try_first_pass retry=10 minlen=12 minclass=3 lcredit=-1 ucredit=-1 dcredit=-1 ocredit=-1 type='/g /etc/pam.d/password-auth-ac
+
+    #登录失败10次锁定
+    #sed -i '4 a\auth        required      pam_tally2.so onerr=fail deny=10 unlock_time=300' /etc/pam.d/system-auth-ac
+    #sed -i '4 a\auth        required      pam_tally2.so onerr=fail deny=10 unlock_time=300' /etc/pam.d/password-auth-ac
+    
+    #禁止root远程登录
+    #sed -i '/^#PermitRootLogin/cPermitRootLogin no' /etc/ssh/sshd_config
 }
 
 #脚本帮助菜单

@@ -47,8 +47,10 @@ echo -e "Memory Usage:\t"`free | awk '/Mem/{printf("%.2f%"), $3/$2*100}'`
 echo -e "Swap Usage:\t"`free | awk '/Swap/{printf("%.2f%"), $3/$2*100}'`
 echo -e "CPU Usage:\t"`cat /proc/stat | awk '/cpu/{printf("%.2f%\n"), ($2+$4)*100/($2+$4+$5)}' | awk '{print $0}' | head -1`
 
-echo -e "磁盘IO"`iostat -dxk`
-echo -e "网络IO"`sar -n DEV 1 1`
+echo -e "\033[32m磁盘IO\033[0m"
+iostat -dxk
+echo -e "\033[32m网络IO\033[0m"
+sar -n DEV 1 1
 
 echo ""
 echo -e "\033[32m占用 CPU 资源最多的前 10 个进程\033[0m"
