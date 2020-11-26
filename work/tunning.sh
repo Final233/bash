@@ -516,6 +516,9 @@ _securitycheck(){
     
     #禁止root远程登录
     #sed -i '/^#PermitRootLogin/cPermitRootLogin no' /etc/ssh/sshd_config
+
+    #删除潜在威胁文件
+    find / -maxdepth 3 -name hosts.equiv -o -name .netrc -o -name .rhosts
 }
 
 #脚本帮助菜单

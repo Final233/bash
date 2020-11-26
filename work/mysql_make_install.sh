@@ -57,7 +57,7 @@ _mysql_make_install(){
         tar xf ${PKGNAME}.tar.gz -C /usr/local/src
         cd /usr/local/src/${PKGNAME}
         rm -f CMakeCache.txt &> /dev/null
-        ${MAKE_OPT} && make -j${CPU_NUM} &> /dev/null && make install &> /dev/null || action "make instll error.." false && exit
+        ${MAKE_OPT} && make -j${CPU_NUM} && make install || ( action "make instll error.." false && exit )
 
         echo "PATH=${APPDIR}/bin:\$PATH" > /etc/profile.d/mysql.sh
         source /etc/profile
@@ -84,6 +84,7 @@ _mysql_make_install(){
         systemctl daemon-reload
         systemctl status mysqld
         #/etc/init.d/mysqld status
+        echo ". /etc/profile"
     fi
 }
 
@@ -99,5 +100,5 @@ _mysql_make_uninstall(){
     fi
 }
 
+#_mysql_make_uninstall
 _mysql_make_install
-_mysql_make_uninstall

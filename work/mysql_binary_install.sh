@@ -63,5 +63,5 @@ _mysql_binary_uninstall(){
     fi
 }
 
-_mysql_binary_uninstall
+#_mysql_binary_uninstall
 _mysql_binary_install
