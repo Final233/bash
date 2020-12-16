@@ -100,5 +100,27 @@ _mysql_make_uninstall(){
     fi
 }
 
-#_mysql_make_uninstall
-_mysql_make_install
+
+_help(){
+    echo "Usage: bash command [options] [args]"
+    echo ""
+    echo "Commands are:"
+    echo "    参数1：install/i 安装; uninstall/u 卸载"
+    echo "=============================================================================="
+    echo ""
+    echo "执行命令例如："
+    echo "        bash $0 install"
+    echo ""
+}
+
+case $1 in
+    install|i)
+    _mysql_make_install
+    ;;
+    uninstall|u)
+    _mysql_make_uninstall
+    ;;
+    *)
+    _help
+    ;;
+esac 

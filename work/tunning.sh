@@ -32,7 +32,7 @@ _grublevel(){
     CPUS=1
     CPUE=$(echo "$(grep -c "cpu cores" /proc/cpuinfo)" - 2 | bc)
     VAULE1="ipv6.disable=1 selinux=0 isolcpus=${CPUS}-${CPUE} nohz_full=${CPUS}-${CPUE} transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M hugepages=20480 intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll intel_iommu=off nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off nohz=off audit=0"
-    if grep selinux=0 ${GRUB} &> /dev/null;then
+    if grep -q selinux=0 ${GRUB};then
         action "grub is success"
     else
         if [ "$1" = "grub1" ];then
@@ -54,7 +54,7 @@ _nic(){
 #echo ethtool -C $2 rx-usecs 0 rx-usecs-irq 0 adaptive-rx off >> ${FILE}
     FILE=/etc/rc.d/rc.local 
     if [ -n "$2" ];then
-        if grep "$2" ${FILE} &> /dev/null;then
+        if grep -q "$2" ${FILE};then
             true
         else
             [ -f ${FILE} ] && cp -av ${FILE}{,.bak"${DATE}"}
@@ -71,7 +71,7 @@ _nic(){
 
 #硬盘调优，根据实际情况
 _disktunning(){
-    if grep noatime /etc/fstab &> /dev/null;then
+    if grep -q noatime /etc/fstab;then
         action "disktunning is success"
     else
         cd /etc/ && cp -a fstab{,.bak"${DATE}"}
@@ -142,7 +142,7 @@ _sysctl(){
 #net.ipv4.conf.eth0.rp_filter = 0
     DATE=$(date +%Y%m%d-%H%M%S)
     FILE=/etc/sysctl.conf
-    if grep "^kernel" ${FILE} &> /dev/null;then
+    if grep -q "^kernel" ${FILE};then
         action "sysctl is success"
     else
         [ -f ${FILE} ] && cp -av ${FILE}{,.bak"${DATE}"} 
@@ -330,6 +330,7 @@ _env(){
 	alias yp='yum provides '
 	alias ys='yum search '
 	EOF
+    #export EDITOR=vim
     source /etc/profile
     #exec bash 
     #exit
@@ -419,14 +420,14 @@ _securitycheck(){
 
     #echo "禁止空密码登录"
     SSHCONF=/etc/ssh/sshd_config
-    if grep "^#PermitEmptyPasswords no" ${SSHCONF} &> /dev/null;then
+    if grep -q "^#PermitEmptyPasswords no" ${SSHCONF};then
         [ -f ${SSHCONF} ] && cp -av ${SSHCONF}{,.bak"${DATE}"}
         sed -i '/^#PermitEmptyPasswords no/s/#//g' "${SSHCONF}"
         echo "修改完成后请重启sshd服务 systemctl restart sshd"
     fi
 
     PAMFILE=/etc/pam.d/system-auth
-    if grep remember=5 "${PAMFILE}" &> /dev/null;then
+    if grep -q remember=5 "${PAMFILE}";then
         true
     else
         sed -ri '/password    sufficient/s/(.*)/\1 remember=5/g' "${PAMFILE}"
@@ -436,7 +437,7 @@ _securitycheck(){
 
     #密码长度不小于 8 个字符，至少包含大小写字母、数字及特殊符号中的 3 类
     #echo 密码复杂度
-    if grep minlen=8 "${PAMFILE}" &> /dev/null;then
+    if grep -q minlen=8 "${PAMFILE}";then
         true
     else
         [ -f "${PAMFILE}" ] && cp -av "${PAMFILE}"{,.bak"${DATE}"}
@@ -461,19 +462,19 @@ _securitycheck(){
     ENVFILE="/etc/profile.d/env.sh"
     #连接超时时间 TMOUT=900
     #umaks标准 umask 027
-    if grep TMOUT=900 ${ENVFILE} &> /dev/null;then
+    if grep -q TMOUT=900 ${ENVFILE};then
         true
     else
         echo TMOUT=900 >> ${ENVFILE}
     fi
-    if grep "umask 027" ${ENVFILE} &> /dev/null;then
+    if grep -q "umask 027" ${ENVFILE};then
         true
     else
         echo "umask 027" >> ${ENVFILE}
     fi
 
     FILE="/etc/security/limits.conf"
-    if grep "^\*" "${FILE}" &> /dev/null;then
+    if grep -q "^\*" "${FILE}";then
         true
     else
         [ -f "${FILE}" ] && cp -av "${FILE}"{,.bak"${DATE}"}
@@ -490,7 +491,7 @@ _securitycheck(){
     fi
 
     FILE="/etc/systemd/system.conf"
-    if grep "^DefaultLimitNPROC" "${FILE}" &> /dev/null;then
+    if grep -q "^DefaultLimitNPROC" "${FILE}";then
     #grep ^DefaultLimitNOFILE "${FILE}" &> /dev/null
         true
     else
@@ -526,12 +527,8 @@ _help(){
     echo "Usage: bash command [options] [args]"
     echo ""
     echo "Commands are:"
-    echo "    参数1：set1 生产主机使用 tunning selilnux sysctl grub"
-    echo "    参数2：set2 生产备机使用 tunning selilnux sysctl grub"
-    echo "    参数3：set3 个人使用 tunning selilnux sysctl grub env vimrc motd atime"
-    echo "    参数4：set4 虚拟机使用 tunning selilnux sysctl grub"
-    echo "    参数5：scy 安全加固"
-    echo "    参数6：nic \$2 网卡调优 \$2网口名"
+    echo "    参数1：set1 生产主机;set2 生产备机;set3 个性化;set4 虚拟机;set5 安全加固" 
+    echo "    网卡调优: bash $0 nic 网卡设备的名称"
     echo "=============================================================================="
     echo ""
     echo "执行命令例如："
@@ -596,5 +593,6 @@ case "$1" in
         _help
     esac
 }
+
 #传参
 _execute "$@"

@@ -59,7 +59,7 @@ case "$1" in
         echo "Usage: bash command [options] [args]"
         echo ""
         echo "Commands are:"
-        echo "    参数1：bakcup|b; recovery|r file.sql.gz"
+        echo "    参数1：bakcup/b; recovery/r file.sql.gz"
         echo "=============================================================================="
         echo ""
         echo "执行命令例如："

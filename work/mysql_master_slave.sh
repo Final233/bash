@@ -47,15 +47,8 @@ PASS="'pass123'"
     mysql -e "show processlist;"
 }
 
-case "$1" in 
-    master|m)
-    _mysql_master
-    ;;
-    slave|s)
-    _mysql_slave
-    ;;
-    *)
-    echo "Usage: bash command [options] [args]"
+_help(){
+	echo "Usage: bash command [options] [args]"
     echo ""
     echo "Commands are:"
     echo "    参数1：master/m 部署主节点，slave/s 部署从节点"
@@ -64,4 +57,16 @@ case "$1" in
     echo "执行命令例如："
     echo "        bash $0 master"
     echo ""
+	}
+	
+case "$1" in 
+    master|m)
+    _mysql_master
+    ;;
+    slave|s)
+    _mysql_slave
+    ;;
+    *)
+    _help()
+	;;
 esac

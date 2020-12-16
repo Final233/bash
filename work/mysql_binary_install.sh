@@ -28,7 +28,8 @@ _mysql_binary_install(){
         tar xf ${PKGNAME}.tar.gz -C /usr/local/
         ln -sv /usr/local/${PKGNAME} ${APPDIR}
         chown root.root ${APPDIR} -R
-
+		
+		export PATH=${APPDIR}/bin:$PATH
         echo "PATH=${APPDIR}/bin:\$PATH" > /etc/profile.d/mysql.sh
         # source /etc/profile
 
@@ -36,6 +37,7 @@ _mysql_binary_install(){
         chown mysql.mysql ${DATADIR}
         chmod o=rx `dirname ${DATADIR}`
         cd ${APPDIR}/ && ./scripts/mysql_install_db --datadir=${DATADIR} --user=mysql
+        #rm -f /etc/my.cnf
         mkdir /etc/mysql && cp ${APPDIR}/support-files/wsrep.cnf /etc/mysql/my.cnf
 
         if grep datadir /etc/mysql/my.cnf;then
@@ -63,5 +65,26 @@ _mysql_binary_uninstall(){
     fi
 }
 
-#_mysql_binary_uninstall
-_mysql_binary_install
+_help(){
+    echo "Usage: bash command [options] [args]"
+    echo ""
+    echo "Commands are:"
+    echo "    参数1：install/i ; uninstall/u"
+    echo "=============================================================================="
+    echo ""
+    echo "执行命令例如："
+    echo "        bash $0 install"
+    echo ""
+}
+
+case $1 in
+    install|i)
+    _mysql_binary_install
+    ;;
+    uninstall|u)
+    _mysql_binary_uninstall
+    ;;
+    *)
+    _help
+    ;;
+esac  
