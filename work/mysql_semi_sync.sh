@@ -18,15 +18,15 @@ _mysql_master_semisync(){
     mysql -e "set global rpl_semi_sync_master_enabled=1; set global rpl_semi_sync_master_timeout = 1000;"
     mysql -e "show variables like '%semi%';"
     mysql -e "show global status like '%semi%';"
-    grep "rpl_semi_sync_master_enabled" /etc/my.cnf || sed "/\[mysqld\]/arpl_semi_sync_master_enabled = 1" /etc/my.cnf -i
-    grep "rpl_semi_sync_master_timeout" /etc/my.cnf || sed "/\[mysqld\]/arpl_semi_sync_master_timeout = 1000" /etc/my.cnf -i
+    grep -q "rpl_semi_sync_master_enabled" /etc/my.cnf || sed "/\[mysqld\]/arpl_semi_sync_master_enabled = 1" /etc/my.cnf -i
+    grep -q "rpl_semi_sync_master_timeout" /etc/my.cnf || sed "/\[mysqld\]/arpl_semi_sync_master_timeout = 1000" /etc/my.cnf -i
 }
 
 _mysql_slave_semisync(){
     mysql -e "install plugin rpl_semi_sync_slave soname 'semisync_slave.so';"
     mysql -e "set global rpl_semi_sync_slave_enabled=1;
     mysql -e "mysql -e "show status like '%semi%';"
-    grep "rpl_semi_sync_slave_enabled" /etc/my.cnf || sed "/\[mysqld\]/arpl_semi_sync_slave_enabled = 1" /etc/my.cnf -i
+    grep -q "rpl_semi_sync_slave_enabled" /etc/my.cnf || sed "/\[mysqld\]/arpl_semi_sync_slave_enabled = 1" /etc/my.cnf -i
 }
 
 _help(){

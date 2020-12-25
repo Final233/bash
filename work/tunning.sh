@@ -69,6 +69,24 @@ _nic(){
     echo "\$2 is null"
 }
 
+_net(){
+FILE=/etc/rc.d/rc.local
+    for DEV in $(ip link show | awk -F: '/UP/{print $2}' | sed 's/[[:space:]]//');do
+        if ethtool "${DEV}" | awk '/Speed/{print $2}' | grep -q 10000;then
+            ethtool -G "${DEV}" 2048 tx 2048
+            ethtool -C "${DEV}" rx-usecs 0 rx-usecs-irq 0 adaptive-rx off
+            if ! grep -q "${DEV}" "${FILE}";then
+                cat >> ${FILE} <<- EOF
+				ethtool -G $DEV 2048 tx 2048
+				ethtool -C $DEV rx-usecs 0 rx-usecs-irq 0 adaptive-rx off
+				EOF
+            fi
+            chmod +x ${FILE} && grep ethtool ${FILE}
+            action "network interface is change success"
+        fi
+    done
+}
+
 #硬盘调优，根据实际情况
 _disktunning(){
     if grep -q noatime /etc/fstab;then
@@ -585,6 +603,9 @@ case "$1" in
         ;;
     scy)
         _securitycheck
+        ;;
+    net)
+        _net
         ;;
     m)
         _m
