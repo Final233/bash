@@ -1,0 +1,16 @@
+#!/bin/bash 
+XMLFILE=/tmp/myvm. xmL 
+IMG_DIR=/var/1ib/libvirt/images 
+BASEVM=centos66
+NEWVM=centos66node1 
+
+qemu-img create -b ${ IMG_DIR}/${ BASEVM}. img -f qcow2 ${IMG_DIR}/${ NEWVM }. img 
+virsh dumpxml rhel6>$XMLFILEI 
+sed -i "/<name>${BASEVM}/s/${BASEVM}/${NEWVM}/"$XMLFILE
+sed -i "/uuid/s/.*$(uuidgen)</" $XMLFILE
+sed -i "/libvirt/s/${BASEVM}/${NEWVM}/" $XMLFILE
+sed -i "/mac add/s/00'/01'/" $XMLFILE
+
+virsh define $XMLFILE
+
+118.118.101.87
