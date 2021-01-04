@@ -12,6 +12,9 @@
 
 . /etc/init.d/functions
 rpm -q expect &> /dev/null || yum install -q -y expect || action "expect is Package not installed" false || exit
+echo "rpm -ivh tcl expect package"
+#rpm -ivh tcl-8.5.13-8.el7.x86_64.rpm 
+#rpm -ivh expect-5.45-14.el7_1.x86_64.rpm
 
 #生成密钥文件
 _sshkeygen(){
@@ -65,7 +68,6 @@ _copyid2(){
     else
         action "127.0.0.1 user password" false
     fi
-
 }
 
 _help(){
