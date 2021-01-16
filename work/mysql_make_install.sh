@@ -10,7 +10,7 @@
 #Copyright (C):         2020 All rights reserved
 #********************************************************************
 
-. /etc/init.d/functions
+	
 
 DATADIR="/data/mysql"
 APPDIR="/usr/local/mysql"
@@ -43,7 +43,7 @@ _mysql_make_install(){
         #wget -c https://mirrors.tuna.tsinghua.edu.cn/mariadb/mariadb-10.5.8/source/mariadb-10.5.8.tar.gz
         action "mariadb source pkg not exist" false 
         echo "wget -c https://mirrors.tuna.tsinghua.edu.cn/mariadb/${PKGNAME}/source/${PKGNAME}.tar.gz"
-        echo "yum install bison bison-devel zlib-devel libcurl-devel libarchive-devel boost-devel gcc gcc-c++ cmake ncurses-devel gnutls-devel libxml2-devel openssl-devel libevent-devel libaio-develi -y"
+        echo "yum install bison bison-devel zlib-devel libcurl-devel libarchive-devel boost-devel gcc gcc-c++ cmake ncurses-devel gnutls-devel libxml2-devel openssl-devel libevent-devel libaio-devel -y"
         exit
     else
         id mysql &> /dev/null || useradd -s /sbin/nologin -r mysql
