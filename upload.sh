@@ -12,7 +12,8 @@
 
 DATE=$(date +%F-%T)
 rm -f bak-*.tar.gz
-git add ./*
+git rm -r --cached
+git add -A
 git commit -m "$DATE"
 git push && echo 上传成功
 DATE=$(date +%Y%m%d)
