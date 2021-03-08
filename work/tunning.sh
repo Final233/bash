@@ -16,7 +16,7 @@ DATE=$(date +%Y%m%d-%H%M%S)
 _grub(){
 #/etc/default/grub grub2-mkconfig -o /boot/grub2/grub.cfg /boot/EFI/cenots/grub2/grub.cfg
 #isolcpus hugepages change setting and rhgb quiet is delete
-#sed -ri '/CMDLINE/s@(.*)"@\1 ipv6.disable=1 selinux=0 isolcpus=1-22 nohz_full=1-22 default_hugepagesz=1G hugepagesz=1G hugepages=32 intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll intel_iommu=off nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off nohz=off audit=0 biosdevname=0 net.ifnames=0"@p'  /etc/default/grub
+#sed -ri '/CMDLINE/s@(.*)"@\1 ipv6.disable=1 selinux=0 isolcpus=1-22 nohz_full=1-22 transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M hugepages=20480 intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll intel_iommu=off nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off nohz=off audit=0 biosdevname=0 net.ifnames=0"@p'  /etc/default/grub
     [ -f "$GRUB" ] && cp -av "$GRUB"{,.bak"${DATE}"}
     if [ -f "$FILE" ];then
         sed -ri "/GRUB_CMDLINE_LINUX=/s@(.*)\"@\1 ${VAULE1}\"@"  /etc/default/grub
@@ -38,10 +38,10 @@ _grublevel(){
         if [ "$1" = "grub1" ];then
             _grub
         elif [ "$1" = "grub2" ];then
-        VAULE1="ipv6.disable=1 selinux=0 transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll intel_iommu=off nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off nohz=off audit=0 biosdevname=0 net.ifnames=0"
+        VAULE1="ipv6.disable=1 selinux=0 transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll intel_iommu=off nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off audit=0 biosdevname=0 net.ifnames=0"
             _grub
         elif [ "$1" = "grub3" ];then
-        VAULE1="ipv6.disable=1 selinux=0 transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll intel_iommu=off nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off nohz=off audit=0"
+        VAULE1="ipv6.disable=1 selinux=0 transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll intel_iommu=off nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off audit=0"
             _grub
         fi
     fi

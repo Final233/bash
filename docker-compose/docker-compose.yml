@@ -1,0 +1,31 @@
+nginx_web1:
+    image: harbor.final.com/final/nginx_base:v1.16.1_20210226
+    container_name: nginx_web1
+    volumes:
+        - /data/:/apps/nginx/html/
+    expose:
+        - 80
+    links:
+        - tomcat_app1
+        - tomcat_app2
+
+tomcat_app1:
+    image: harbor.final.com/final/tomcat_app1:v1_20210226
+    container_name: tomcat_app1
+    expose:
+        - 8080
+
+tomcat_app2:
+    image: harbor.final.com/final/tomcat_app2:v1_20210226
+    container_name: tomcat_app2
+    expose:
+        - 8080
+
+haproxy_1:
+    image: harbor.final.com/final/haproxy_base:v2.2.8_20210226
+    container_name: haproxy_1
+    ports:
+        - "80:80"
+        - "8888:8888"
+    links:
+        - nginx_web1

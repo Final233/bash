@@ -1,0 +1,8 @@
+- hosts: webs
+  remote_user: root
+  roles:
+  - webs
+- hosts: dbs
+  remote_user: root
+  roles:
+  - dbs

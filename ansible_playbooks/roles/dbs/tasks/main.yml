@@ -1,0 +1,10 @@
+- name: install {{ package }} package
+  yum: name={{ package }}
+- name: install conf file
+  template: src=my.cnf dest=/etc/my.cnf
+  tags:
+  - conf
+  notify:
+  - restart {{ service }}
+- name: start {{ service }} service
+  service: name={{ service }} state=started enabled=true

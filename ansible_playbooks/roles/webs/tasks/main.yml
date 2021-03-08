@@ -1,0 +1,10 @@
+- name: install httpd package
+  yum: name=httpd
+- name: install conf file
+  template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+  tags:
+  - conf
+  notify:
+  - restart httpd
+- name: start httpd service
+  service: name=httpd state=started enabled=true

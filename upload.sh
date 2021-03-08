@@ -12,6 +12,7 @@
 
 DATE=$(date +%F-%T)
 rm -f bak-*.tar.gz
+# git remote set-url origin https://xxxxxxx.com/cangku
 git rm -r --cached
 git add -A
 git commit -m "$DATE"
