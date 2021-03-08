@@ -31,17 +31,17 @@ _grublevel(){
     GRUB=/etc/default/grub
     CPUS=1
     CPUE=$(echo "$(grep -c "cpu cores" /proc/cpuinfo)" - 2 | bc)
-    VAULE1="ipv6.disable=1 selinux=0 isolcpus=${CPUS}-${CPUE} nohz_full=${CPUS}-${CPUE} transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M hugepages=20480 intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll intel_iommu=off nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off nohz=off audit=0"
+    VAULE1="ipv6.disable=1 selinux=0 isolcpus=${CPUS}-${CPUE} nohz_full=${CPUS}-${CPUE} rcu_nocbs=${CPUS}-${CPUE} nohz=off transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M hugepages=20480  skew_tick=1 intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll iommu=off intel_iommu=off intel_pstate=disable nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off audit=0"
     if grep -q selinux=0 ${GRUB};then
         action "grub is success"
     else
         if [ "$1" = "grub1" ];then
             _grub
         elif [ "$1" = "grub2" ];then
-        VAULE1="ipv6.disable=1 selinux=0 transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll intel_iommu=off nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off audit=0 biosdevname=0 net.ifnames=0"
+        VAULE1="ipv6.disable=1 selinux=0 transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M skew_tick=1 intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll iommu=off intel_iommu=off intel_pstate=disable nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off audit=0 net.ifnames=0"
             _grub
         elif [ "$1" = "grub3" ];then
-        VAULE1="ipv6.disable=1 selinux=0 transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll intel_iommu=off nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off audit=0"
+        VAULE1="ipv6.disable=1 selinux=0 transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M skew_tick=1 intel_idle.max_cstate=0 processor.max_cstate=0 idle=poll iommu=off intel_iommu=off intel_pstate=disable nosoftlockup mce=ignore_ce nmi_watchdog=0 pcie_aspm=off audit=0"
             _grub
         fi
     fi
@@ -113,34 +113,12 @@ _tunning(){
     virsh net-undefine default  &> /dev/null
     #virsh net-list
     {
-    #停止不必要的服务
-    systemctl stop libvirtd.service &> /dev/null
-    systemctl stop iptables.service &> /dev/null
-    systemctl stop firewalld.service &> /dev/null
-    #用于中断优化分配，它会自动收集系统数据以分析使用模式，并依据系统负载状况将CPU转为C1-C6状态 
-    systemctl stop irqbalance.service &> /dev/null
-    systemctl stop abrt-ccpp.service &> /dev/null
-    systemctl stop abrt-oops.service &> /dev/null
-    systemctl stop abrt-xorg.service &> /dev/null
-    systemctl stop abrtd.service &> /dev/null
-    systemctl stop alsa-state.service &> /dev/null
-    #通用unix打印服务
-    systemctl stop cups.service &> /dev/null
-    systemctl stop ModemManager.service &> /dev/null
-    systemctl stop postfix.service &> /dev/null
-    #cpupower服务提供CPU的运行规范
-    systemctl stop cpuspower  &> /dev/null
-    systemctl stop firewalld &> /dev/null
-
-    #关闭开机自启的服务
-    systemctl disable firewalld.service &> /dev/null
-    systemctl disable libvirtd.service &> /dev/null
-    systemctl disable iptables.service &> /dev/null
-    systemctl disable irqbalance.service &> /dev/null
-    systemctl disable alsa-state.service &> /dev/null
-    systemctl disable cups.service &> /dev/null
-    systemctl disable ModemManager.service &> /dev/null
-    systemctl disable postfix.service &> /dev/null
+    systemctl stop libvirtd.service iptables.service firewalld.service irqbalance.service abrt-ccpp.service abrt-oops.service abrt-xorg.service abrtd.service alsa-state.service cups.service ModemManager.service postfix.service cpupower.service avahi-daemon.service NetworkManager.service dnsmasq.service lvm2-monitor.service rpcgssd.service rpcidmapd.service pcscd.service cpuspeed cpufreqd powerd &> /dev/null
+    systemctl disable libvirtd.service iptables.service firewalld.service irqbalance.service abrt-ccpp.service abrt-oops.service abrt-xorg.service abrtd.service alsa-state.service cups.service ModemManager.service postfix.service cpupower.service avahi-daemon.service NetworkManager.service dnsmasq.service lvm2-monitor.service rpcgssd.service rpcidmapd.service pcscd.service cpuspeed cpufreqd powerd &> /dev/null
+    #for i in libvirtd.service iptables.service firewalld.service irqbalance.service abrt-ccpp.service abrt-oops.service abrt-xorg.service abrtd.service alsa-state.service cups.service ModemManager.service postfix.service cpupower.service avahi-daemon.service NetworkManager.service dnsmasq.service lvm2-monitor.service rpcgssd.service rpcidmapd.service pcscd.service cpuspeed cpufreqd powerd;do
+    #    systemctl stop $i &> /dev/null
+    #    systemctl disable $i $> /dev/null
+    #done
     }&
     wait
     action "tunning is success"
@@ -420,9 +398,9 @@ _m(){
     echo "grub2-mkconfig -o ${FILE} "
     echo "CPU 隔离 isolcpus=1-22 nohz_full=1-22"
     echo "大页内存设置 default_hugepagesz=1G hugepagesz=1G hugepages=32 default_hugepagesz=2M hugepagesz=2M hugepages=20480"
-    echo "上海L1 FAST流开启 net.ipv4.conf.default.rp_filter = 0 net.ipv4.conf.all.rp_filter = 0 net.ipv4.conf.eth0.rp_filter = 0"
+    echo "上海L1 FAST流开启 net.ipv4.conf.default.rp_filter = 0 net.ipv4.conf.all.rp_filter = 0 net.ipv4.conf.eth0.rp_filter = 0 不开启源地址校验"
     echo "setcap 'cap_ipc_lock=+ep' oes && setcap 'cap_ipc_lock=+ep' mds"
-    echo "sysctl.conf >> vm.hugetlb_shm_group=1001 这里是gidnum"
+    echo "sysctl.conf >> vm.hugetlb_shm_group=1001 指定用户组ID"
 }
 
 #安全检查security check
@@ -480,16 +458,8 @@ _securitycheck(){
     ENVFILE="/etc/profile.d/env.sh"
     #连接超时时间 TMOUT=900
     #umaks标准 umask 027
-    if grep -q TMOUT=900 ${ENVFILE};then
-        true
-    else
-        echo TMOUT=900 >> ${ENVFILE}
-    fi
-    if grep -q "umask 027" ${ENVFILE};then
-        true
-    else
-        echo "umask 027" >> ${ENVFILE}
-    fi
+    grep -q TMOUT=900 ${ENVFILE} || echo TMOUT=900 >> ${ENVFILE}
+    grep -q "umask 027" ${ENVFILE} || echo "umask 027" >> ${ENVFILE}
 
     FILE="/etc/security/limits.conf"
     if grep -q "^\*" "${FILE}";then
@@ -542,22 +512,28 @@ _securitycheck(){
 
 #脚本帮助菜单
 _help(){
+    echo 
     echo "Usage: bash command [options] [args]"
-    echo ""
+    echo 
     echo "Commands are:"
-    echo "    参数1：set1 生产主机;set2 生产备机;set3 个性化;set4 虚拟机;set5 安全加固" 
+    echo -e "    set1\t生产主机"
+    echo -e "    set2\t生产备机"
+    echo -e "    set3\t个性化"
+    echo -e "    set4\t虚拟机" 
+    echo -e "    set5\t安全加固" 
+    echo 
+    echo "Samples:"
+    echo "    bash $0 set3"
     echo "    网卡调优: bash $0 nic 网卡设备的名称"
+    echo 
     echo "=============================================================================="
-    echo ""
-    echo "执行命令例如："
-    echo "        bash $0 set3"
-    echo ""
+    echo "  By Final ..."
+    echo 
 }
 
 _ssh(){
     cp /etc/ssh/sshd_config{,.bak"${DATE}"}
-    sed -i '/GSSAPIAuthentication/s/yes/no/'  /etc/ssh/sshd_config 
-    sed -i '/#UseDNS/cUseDNS no'  /etc/ssh/sshd_config
+    sed -i -e '/GSSAPIAuthentication/s/yes/no/' -e '/#UseDNS/cUseDNS no' /etc/ssh/sshd_config
     if sshd -t;then
         systemctl restart sshd
         action "sshd setting success"
