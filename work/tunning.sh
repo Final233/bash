@@ -345,6 +345,7 @@ _vimrc(){
 	set expandtab
 	set sts=4
 	autocmd BufNewFile *.sh exec ":call SetTitle()"
+	autocmd FileType yaml setlocal sw=2 sts=2 et ai
 	func SetTitle() 
         if expand("%:e") == 'sh'
         call setline(1,"#!/usr/bin/env bash") 
